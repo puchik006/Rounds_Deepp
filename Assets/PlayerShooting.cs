@@ -6,6 +6,7 @@ public class PlayerShooting : MonoBehaviour
     public Transform firePoint; // Point from which bullets will be spawned.
     public float bulletSpeed = 10f; // Speed of the bullets.
     public float fireRate = 0.5f; // Fire rate in seconds.
+    public float bulletForce = 20f; // Initial force applied to bullets.
     private float nextFireTime = 0f; // Time at which the next shot can be fired.
 
     void Update()
@@ -24,13 +25,20 @@ public class PlayerShooting : MonoBehaviour
 
     void Shoot()
     {
+        // Calculate the direction from the fire point to the mouse position.
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = (mousePosition - (Vector2)firePoint.position).normalized;
+
         // Instantiate a bullet at the fire point's position and rotation.
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
         // Get the bullet's Rigidbody2D component.
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
 
-        // Set the bullet's velocity to make it move in the forward direction.
-        rb.velocity = transform.right * bulletSpeed;
+        // Apply an initial force to the bullet in the calculated direction.
+        rb.AddForce(direction * bulletForce, ForceMode2D.Impulse);
+
+        // Set the bullet's velocity to make it move at a constant speed.
+        rb.velocity = direction * bulletSpeed;
     }
 }
