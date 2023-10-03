@@ -8,10 +8,12 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 5.0f; // Adjust the jump force in the Unity Inspector.
     private bool isGrounded = true;
     private Rigidbody2D rb;
+    private Animator _animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -30,10 +32,16 @@ public class PlayerMovement : MonoBehaviour
         if (horizontalInput > 0)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0); // Face right (0 degrees rotation).
+            _animator.SetBool("IsRunning", true);
         }
         else if (horizontalInput < 0)
         {
             transform.rotation = Quaternion.Euler(0, 180, 0); // Face left (180 degrees rotation).
+            _animator.SetBool("IsRunning", true);
+        }
+        else
+        {
+            _animator.SetBool("IsRunning", false);
         }
 
         // Check for jump input.
@@ -42,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
             // Apply a vertical force to make the player jump.
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isGrounded = false;
+            _animator.SetBool("IsGrounded", false);
         }
     }
 
@@ -50,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            _animator.SetBool("IsGrounded", true);
         }
     }
 }
