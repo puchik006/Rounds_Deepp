@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerShooting : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class PlayerShooting : MonoBehaviour
     public float fireRate = 0.5f; // Fire rate in seconds.
     public float bulletForce = 20f; // Initial force applied to bullets.
     private float nextFireTime = 0f; // Time at which the next shot can be fired.
+
+    public static Action PlayerShooted;
 
     void Update()
     {
@@ -19,6 +22,7 @@ public class PlayerShooting : MonoBehaviour
             {
                 Shoot();
                 nextFireTime = Time.time + 1f / fireRate; // Calculate the next allowed fire time.
+                PlayerShooted?.Invoke();
             }
         }
     }
